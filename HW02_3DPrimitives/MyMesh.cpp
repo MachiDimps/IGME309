@@ -309,7 +309,7 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	//Divide height by number of subdivisions
 	float heightIncrement = a_fRadius / (float)a_nSubdivisions;
-	float currentHeight = 2.0f * heightIncrement;
+	float currentHeight = -(a_fRadius / 2.0f) + heightIncrement;
 	float angleIncrement = (float)((2.0 * PI) / a_nSubdivisions);
 	float currentAngle = 0;//The angle of each point from the center
 	
@@ -346,8 +346,8 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	//make cones at points
 	for (int i = 0; i < a_nSubdivisions; i++) {
-		AddTri(vector3(0.0f, 0.0f, 0.0f), circles[0][(i + 1) % a_nSubdivisions], circles[0][i]);
-		AddTri(vector3(0.0f, 0.0f, a_fRadius), circles[a_nSubdivisions-3][i], circles[a_nSubdivisions - 3][(i + 1) % a_nSubdivisions]);
+		AddTri(vector3(0.0f, 0.0f, -(a_fRadius/2.0f)), circles[0][(i + 1) % a_nSubdivisions], circles[0][i]);
+		AddTri(vector3(0.0f, 0.0f, (a_fRadius/2.0f)), circles[a_nSubdivisions - 3][i], circles[a_nSubdivisions - 3][(i + 1) % a_nSubdivisions]);//This one is stretched and I don't know why
 	}
 	//draw walls
 
