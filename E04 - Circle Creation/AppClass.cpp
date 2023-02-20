@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	////Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Machi Dimps - mrd6635@rit.edu";
 	vector3 v3Position(0.0f, 0.0f, 10.0f);
 	vector3 v3Target = ZERO_V3;
 	vector3 v3Upward = AXIS_Y;
@@ -11,7 +11,7 @@ void Application::InitVariables(void)
 	//Make MyMesh object
 	m_pMesh = new MyMesh();
 	//Generate a circle
-	m_pMesh->GenerateCircle(2.0f, 5, C_RED);
+	m_pMesh->GenerateCircle(3.0f, 12, C_BLUE);
 }
 void Application::Update(void)
 {
@@ -35,8 +35,13 @@ void Application::Display(void)
 	// Clear the screen
 	ClearScreen();
 
+	static float fValue = 0.0f;
+	matrix4 m4ToWorld;
+	m4ToWorld[3] = vector4(vector3(fValue, 0, 0), 1.0);
+	//fValue += 0.1f;
+
 	//Render the mesh
-	m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), ToMatrix4(m_qArcBall));
+	m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m4ToWorld);
 
 	// draw a skybox
 	m_pModelMngr->AddSkyboxToRenderList();

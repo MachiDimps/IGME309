@@ -14,7 +14,7 @@ namespace BTX
 		bool m_bBinded = false;		//Binded flag
 		uint m_uVertexCount = 0;	//Number of vertices in this MyMesh
 		GLuint m_VAO = 0;			//OpenGL Vertex Array Object
-		GLuint m_VBO = 0;			//OpenGL Vertex Array Object
+		GLuint m_VBO = 0;			//OpenGL Vertex Buffer Object
 
 		std::vector<vector3> m_lVertex;		//Composed vertex array
 		std::vector<vector3> m_lVertexPos;	//List of Vertices

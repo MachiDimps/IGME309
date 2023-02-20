@@ -61,9 +61,36 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
+	//Setup Circle parts
+	std::vector<vector3> points; //Vector container of points to build the shape
+	float currentAngle = 0;//The angle of each point from the center
 
+	//Circumference of a unit circle is 2*PI, so our machine needs to place a point at every (2*PI)/subdivisions interval
+	float interval = (float)((2.0 * PI) / a_nSubdivisions);//add this interval to our current angle after drawing each point.
+	
+	//Machine makes points for base circle
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fRadius, sin(currentAngle) * a_fRadius, -(a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		points.push_back(point);
+	}
+
+	//draw base circles
+	for (int j = 0; j < a_nSubdivisions; j++) {
+		AddTri(vector3(0.0f, 0.0f, (a_fHeight / 2)), points[j], points[(j + 1) % a_nSubdivisions]);
+	}
+
+	//Draw the point
+	for (int j = 0; j < a_nSubdivisions; j++) {
+		AddTri(vector3(0.0f, 0.0f, -(a_fHeight/2)), points[(j + 1) % a_nSubdivisions], points[j]);
+	}
+
+	// Make another circle with a center vertex @ (0,0,height)
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
@@ -85,8 +112,52 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
+	//Setup Circle parts
+	std::vector<vector3> topPoints; //Vector container of points to build the shape
+	std::vector<vector3> bottomPoints;
+	float currentAngle = 0;//The angle of each point from the center
+
+	//Circumference of a unit circle is 2*PI, so our machine needs to place a point at every (2*PI)/subdivisions interval
+	float interval = (float)((2.0 * PI) / a_nSubdivisions);//add this interval to our current angle after drawing each point.
+
+	//Make top points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fRadius, sin(currentAngle) * a_fRadius, -(a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		topPoints.push_back(point);
+	}
+
+	//draw top circle
+	for (int j = 0; j < a_nSubdivisions; j++) {
+		AddTri(vector3(0.0f, 0.0f, -(a_fHeight / 2.0f)), topPoints[(j + 1) % a_nSubdivisions], topPoints[j]);
+	}
+
+	//make bottom points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fRadius, sin(currentAngle) * a_fRadius, (a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		bottomPoints.push_back(point);
+	}
+
+	//draw bottom circle
+	for (int j = 0; j < a_nSubdivisions; j++) {
+		AddTri(vector3(0.0f, 0.0f, (a_fHeight / 2.0f)), bottomPoints[j], bottomPoints[(j + 1) % a_nSubdivisions]);
+	}
+
+	//Add quads along sides
+	
+	for (int k = 0; k < a_nSubdivisions; k++) {
+		AddQuad(topPoints[k], topPoints[(k + 1) % a_nSubdivisions], bottomPoints[k], bottomPoints[(k + 1) % a_nSubdivisions]);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -115,8 +186,68 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
+	//Setup Circle parts
+	std::vector<vector3> pointsTopOuter; //Vector container of points to build the shape
+	std::vector<vector3> pointsTopInner;
+	std::vector<vector3> pointsBottomOuter;
+	std::vector<vector3> pointsBottomInner;
+	float currentAngle = 0;//The angle of each point from the center
+
+	//Circumference of a unit circle is 2*PI, so our machine needs to place a point at every (2*PI)/subdivisions interval
+	float interval = (float)((2.0 * PI) / a_nSubdivisions);//add this interval to our current angle after drawing each point.
+
+	//Make top outer points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fOuterRadius, sin(currentAngle) * a_fOuterRadius, -(a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		pointsTopOuter.push_back(point);
+	}
+
+	//Make top inner points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fInnerRadius, sin(currentAngle) * a_fInnerRadius, -(a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		pointsTopInner.push_back(point);
+	}
+
+	//make bottom outer points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fOuterRadius, sin(currentAngle) * a_fOuterRadius, (a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		pointsBottomOuter.push_back(point);
+	}
+
+	//make bottom outer points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+		vector3 point = vector3(cos(currentAngle) * a_fInnerRadius, sin(currentAngle) * a_fInnerRadius, (a_fHeight / 2.0f));
+		//Increment angle
+		currentAngle += interval;
+		//add point to vertex vector
+		pointsBottomInner.push_back(point);
+	}
+
+	//Add quads along sides and bottom
+
+	for (int k = 0; k < a_nSubdivisions; k++) {
+		AddQuad(pointsTopOuter[k], pointsTopOuter[(k + 1) % a_nSubdivisions], pointsBottomOuter[k], pointsBottomOuter[(k + 1) % a_nSubdivisions]);
+		AddQuad(pointsBottomInner[k], pointsBottomInner[(k + 1) % a_nSubdivisions], pointsTopInner[k], pointsTopInner[(k + 1) % a_nSubdivisions]);
+		AddQuad(pointsBottomOuter[k], pointsBottomOuter[(k + 1) % a_nSubdivisions], pointsBottomInner[k], pointsBottomInner[(k + 1) % a_nSubdivisions]);
+		AddQuad(pointsTopInner[k], pointsTopInner[(k + 1) % a_nSubdivisions], pointsTopOuter[k], pointsTopOuter[(k + 1) % a_nSubdivisions]);
+	}
+
+	
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -150,6 +281,7 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
 
+
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
@@ -172,8 +304,52 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
+
+	//Divide height by number of subdivisions
+	float heightIncrement = a_fRadius / (float)a_nSubdivisions;
+	float currentHeight = 2.0f * heightIncrement;
+	float angleIncrement = (float)((2.0 * PI) / a_nSubdivisions);
+	float currentAngle = 0;//The angle of each point from the center
+	
+	std::vector<std::vector<vector3>> circles;//the circles making up our sphere
+
+	//Create point vectors for circles
+	for (int i = 2; i < a_nSubdivisions; i++) {
+		
+		//create new circle vector
+		std::vector<vector3> circle;
+		//fill that vector with points
+		for (int i = 0; i < a_nSubdivisions; i++) {
+			//make new point sine and cosine * hypotenuse (radius) give us x and y position of point
+			vector3 point = vector3(cos(currentAngle) * a_fRadius, sin(currentAngle) * a_fRadius, currentHeight);
+			//Increment angle
+			currentAngle += angleIncrement;
+			//add point to vertex vector
+			circle.push_back(point);
+		}
+
+		//add circle vector to vector vector
+		circles.push_back(circle);
+
+		//increment the height we building them at
+		currentAngle += angleIncrement;
+		currentHeight += heightIncrement;
+	}
+
+	for (int i = 0; i < a_nSubdivisions - 3; i++) {
+		for (int j = 0; j < a_nSubdivisions; j++) {
+			AddQuad(circles[i][j], circles[i][(j + 1) % a_nSubdivisions], circles[i+1][j], circles[i+1][(j + 1) % a_nSubdivisions]);
+		}
+	}
+
+	//make cones at points
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		AddTri(vector3(0.0f, 0.0f, 0.0f), circles[0][(i + 1) % a_nSubdivisions], circles[0][i]);
+		AddTri(vector3(0.0f, 0.0f, a_fRadius), circles[a_nSubdivisions-3][i], circles[a_nSubdivisions - 3][(i + 1) % a_nSubdivisions]);
+	}
+	//draw walls
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
