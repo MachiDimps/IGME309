@@ -39,8 +39,72 @@ void Application::Display(void)
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
 
-	m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_qArcBall));
+	static float fPos = 0.0f;
+	matrix4 m4Space = glm::translate(vector3(fPos, 0.0f, 0.0f));
+	fPos += 0.01f;
 
+
+	//First Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-3.0f, 3.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(3.0f, 3.0f, 0.0f)));
+
+	//Second Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-2.0f, 2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(2.0f, 2.0f, 0.0f)));
+
+	//Third Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-3.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-2.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-1.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(0.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(1.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(2.0f, 1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(3.0f, 1.0f, 0.0f)));
+
+	//Fourth Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-4.0f, 0.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-3.0f, 0.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-1.0f, 0.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(1.0f,0.0f,0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(3.0f, 0.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(4.0f, 0.0f, 0.0f)));
+
+	//Fifth Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-5.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-4.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-3.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-2.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-1.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(0.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(1.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(2.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(3.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(4.0f, -1.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(5.0f, -1.0f, 0.0f)));
+
+	//Sixth Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-5.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-3.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-2.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-1.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(0.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(1.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(2.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(3.0f, -2.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(5.0f, -2.0f, 0.0f)));
+
+	//Seventh Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-5.0f, -3.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-3.0f, -3.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(3.0f, -3.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(5.0f, -3.0f, 0.0f)));
+
+	//Eighth Row
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-2.0f, -4.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(-1.0f, -4.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(1.0f, -4.0f, 0.0f)));
+	m_pMesh->Render(m4Projection, m4View, m4Space * ToMatrix4(m_qArcBall) * glm::translate(vector3(2.0f, -4.0f, 0.0f)));
 	// draw a skybox
 	m_pModelMngr->AddSkyboxToRenderList();
 
