@@ -42,7 +42,6 @@ void Application::Display(void)
 	m_qOrientation = m_qOrientation * glm::angleAxis(glm::radians(m_v3Rotation.x), AXIS_X);
 	m_qOrientation = m_qOrientation * glm::angleAxis(glm::radians(m_v3Rotation.y), AXIS_Y);
 	m_qOrientation = m_qOrientation * glm::angleAxis(glm::radians(m_v3Rotation.z), AXIS_Z);
-	m_v3Rotation = ZERO_V3;
 
 	/*
 	* The following line was replaced by the model manager so we can see a model instead of a cone
@@ -50,6 +49,7 @@ void Application::Display(void)
 	//m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_m4Model));
 	m_pModelMngr->AddModelToRenderList(m_sSteve, ToMatrix4(m_qOrientation));
 
+	m_v3Rotation = ZERO_V3;//Zeroes out rotation so we're not applying it over and over again
 
 	// draw a skybox
 	m_pModelMngr->AddSkyboxToRenderList();
