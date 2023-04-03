@@ -22,20 +22,23 @@ void MyCamera::MoveForward(float a_fDistance)
 	//		 backwards and we never get closer to the plane as we should 
 	//		 because as we are looking directly at it.
 	
-	m_v3Position += vector3(0.0f, 0.0f, a_fDistance) * m_v3Forward;
-	m_v3Target += vector3(0.0f, 0.0f, a_fDistance) * m_v3Forward;
+	m_v3Position += a_fDistance * m_v3Forward; //Adding distance along local Z vector
+	m_v3Target += a_fDistance * m_v3Forward;
+	m_v3Above += a_fDistance * m_v3Forward;
 }
 void MyCamera::MoveVertical(float a_fDistance)
 {
 	//Tip:: Look at MoveForward
-	m_v3Position += vector3(0.0f, a_fDistance, 0.0f) * m_v3Upward;
-	m_v3Target += vector3(0.0f, a_fDistance, 0.0f) * m_v3Upward;
+	m_v3Position += a_fDistance * m_v3Upward; //Adding distance along local Y vector
+	m_v3Target += a_fDistance * m_v3Upward;
+	m_v3Above += a_fDistance * m_v3Upward;
 }
 void MyCamera::MoveSideways(float a_fDistance)
 {
 	//Tip:: Look at MoveForward
-	m_v3Position += vector3(a_fDistance, 0.0f, 0.0f) * m_v3Rightward;
-	m_v3Target += vector3(a_fDistance, 0.0f, 0.0f) * m_v3Rightward;
+	m_v3Position += a_fDistance * m_v3Rightward; //Adding distance along local X vector
+	m_v3Target += a_fDistance * m_v3Rightward;
+	m_v3Above += a_fDistance * m_v3Rightward;
 }
 void MyCamera::CalculateView(void)
 {
@@ -46,17 +49,20 @@ void MyCamera::CalculateView(void)
 	//		 have change so you only need to focus on the directional and positional 
 	//		 vectors. There is no need to calculate any right click process or connections.
 
-	m_v3Forward = m_v3Forward * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
-	m_v3Upward = m_v3Upward * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
-	m_v3Rightward = m_v3Rightward * glm::angleAxis(glm::radians(m_v3PitchYawRoll.z), AXIS_Z);
+	quaternion q1 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), m_v3Rightward);//Quat: Stores rotation about local X axis
+	quaternion q2 = glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), m_v3Upward);//Quat: Stores rotation about local Y axis
+	quaternion q3 = q1 * q2;//Sum of X and Y rotations
+
+	m_v3Forward = glm::rotate(q3, m_v3Forward);//Applying rotation to forward vector
+	m_v3Rightward = glm::rotate(q3, m_v3Rightward);//Applying rotation to rightward vector
+
 	
-	m_v3Target = m_v3Target * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
-	m_v3Target = m_v3Target * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
+	m_v3Target = m_v3Position + m_v3Forward; //Sets target to space in front of camera
 
 	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Upward);
 
 	
-	m_v3PitchYawRoll = ZERO_V3;
+	m_v3PitchYawRoll = ZERO_V3;//Zero stuff out to prevent continuous rotation
 }
 //You can assume that the code below does not need changes unless you expand the functionality
 //of the class or create helper methods, etc.
