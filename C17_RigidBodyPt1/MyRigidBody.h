@@ -70,6 +70,8 @@ public:
 	*/
 	void AddToRenderList(void);
 
+	vector3 GlobalizeVector(vector3 input);
+
 	/*
 	USAGE: Tells if the object is colliding with the incoming one
 	ARGUMENTS: other -> The Object being tested for collision with current Rigidbody

@@ -213,6 +213,7 @@ public:
 	Arguments: The Model Matrix containing information in Global Space
 	*/
 	void SetModelMatrix(matrix4 a_m4ModelMatrix);
+	vector3 makeGlobal(matrix4 m4ToWorld, vector3 input);
 #pragma endregion
 
 private:

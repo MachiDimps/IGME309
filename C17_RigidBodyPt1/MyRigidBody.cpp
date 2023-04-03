@@ -133,6 +133,7 @@ MyRigidBody& MyRigidBody::operator=(MyRigidBody const& other)
 MyRigidBody::~MyRigidBody(){Release();};
 
 //--- Non Standard Singleton Methods
+
 void MyRigidBody::AddToRenderList(void)
 {
 	if (!m_bVisible)
@@ -141,7 +142,25 @@ void MyRigidBody::AddToRenderList(void)
 	//m_pMeshMngr->AddWireCubeToRenderList(glm::translate(m_m4ToWorld, m_v3Center) * glm::scale(m_v3HalfWidth * 2.0f), C_WHITE);
 	m_pModelMngr->AddWireSphereToRenderList(glm::translate(m_m4ToWorld, m_v3Center) * glm::scale(vector3(m_fRadius)), m_v3Color);
 }
+vector3 BTX::MyRigidBody::GlobalizeVector(vector3 input)
+{
+	return m_m4ToWorld * vector4(input, 1.0f);
+}
 bool MyRigidBody::IsColliding(MyRigidBody* const other)
 {
-	return (glm::distance(GetCenterGlobal(), other->GetCenterGlobal()) < m_fRadius + other->m_fRadius);
+	bool bColliding = true;
+
+	//if the sum of the radii is > distance of their centers
+	vector3 v3ThisCenterG = GlobalizeVector(m_v3Center);
+	vector3 v3OtherCenterG = GlobalizeVector(other->m_v3Center);
+	float fDistance = glm::distance(this->m_v3Center, other->m_v3Center);
+	float fRadiiSum = this->m_fRadius + other->m_fRadius;
+	bColliding = fRadiiSum > fDistance;
+
+	if (bColliding) {
+		this->m_v3Color = vector3(1.0f, 0.0f, 0.0f);
+		other->m_v3Color = C_RED;
+	}
+
+	return bColliding;
 }
