@@ -1,7 +1,7 @@
 /*----------------------------------------------
-Programmer: Alberto Bobadilla (labigm@rit.edu)
-Date: 2021/02
-Update: 2021/02
+Programmer: Machi Dimps (mrd6635@rit.edu)
+Date: 2023/04
+Update: 2023/04
 ----------------------------------------------*/
 #ifndef __MYRIGIDBODY_H_
 #define __MYRIGIDBODY_H_
