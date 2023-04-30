@@ -26,10 +26,34 @@ Octant::Octant(uint a_nMaxLevel, uint a_nIdealEntityCount)
 
 	//The following is a made-up size, you need to make sure it is measuring all the object boxes in the world
 	std::vector<vector3> lMinMax;
-	lMinMax.push_back(vector3(-50.0f));
-	lMinMax.push_back(vector3(25.0f));
-	RigidBody pRigidBody = RigidBody(lMinMax);
 
+	//loop through objects in entity manager to find min and max
+	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++) {
+
+		//Storing current entity (nullptr is part of check that aborts if no entities are found
+		Entity* pEntity = nullptr;
+		pEntity = m_pEntityMngr->GetEntity(i);
+
+		//storing current rigid body
+		RigidBody* pRB = nullptr;
+		if (pEntity) {
+			pRB = pEntity->GetRigidBody();
+		}
+
+		//for Max and min
+		vector3 v3Max;
+		vector3 v3Min;
+
+		if (pRB) {
+			v3Max = pRB->GetMaxGlobal();
+			v3Min = pRB->GetMinGlobal();
+			lMinMax.push_back(vector3(v3Max));
+			lMinMax.push_back(vector3(v3Min));
+		}
+
+	}
+	
+	RigidBody pRigidBody = RigidBody(lMinMax);
 
 	//The following will set up the values of the octant, make sure the are right, the rigid body at start
 	//is NOT fine, it has made-up values
@@ -48,6 +72,36 @@ bool Octant::IsColliding(uint a_uRBIndex)
 	//If the index given is larger than the number of elements in the bounding object there is no collision
 	//As the Octree will never rotate or scale this collision is as easy as an Axis Alligned Bounding Box
 	//Get all vectors in global space (the octant ones are already in Global)
+
+	Entity* pEntity = nullptr;
+	pEntity = m_pEntityMngr->GetEntity(a_uRBIndex);
+	
+	//storing current rigid body
+	RigidBody* pRB = nullptr;
+	if (pEntity) {
+		pRB = pEntity->GetRigidBody();
+	}
+
+	//AABB collision check with Rigid Body (@ index) and Octant (The big yellow box)
+	if (pRB) {
+		//compare maxes and mins of Rigid Body to maxes and mins of Octant
+		if (this->m_v3Min.x > pRB->GetMaxGlobal().x)//Is object to the left of octant?
+			return false;
+		if (this->m_v3Max.x < pRB->GetMinGlobal().x)//Is object to the right of octant?
+			return false;
+
+		if (this->m_v3Max.y < pRB->GetMinGlobal().y)//Is object above octant?
+			return false;
+		if (this->m_v3Min.y > pRB->GetMaxGlobal().y)//Is object below octant?
+			return false;
+
+		if (this->m_v3Max.z < pRB->GetMinGlobal().z)//Is object in front of octant?
+			return false;
+		if (this->m_v3Min.z < pRB->GetMaxGlobal().z)//Is object behind octant?
+			return false;
+	}
+	
+
 	return true; // for the sake of startup code
 }
 void Octant::Display(uint a_nIndex, vector3 a_v3Color)
@@ -72,11 +126,38 @@ void Octant::Subdivide(void)
 		return;
 
 	//Subdivide the space and allocate 8 children
+	//vector3(m_v3Center.x, m_v3Center.y, m_v3Center.z)
+	Octant* child0 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[0] = child0;
+
+	Octant* child1 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[1] = child1;
+
+	Octant* child2 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[2] = child2;
+
+	Octant* child3 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[3] = child3;
+
+	Octant* child4 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[4] = child4;
+
+	Octant* child5 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[5] = child5;
+
+	Octant* child6 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[6] = child6;
+
+	Octant* child7 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
+	m_pChild[7] = child7;
 }
 bool Octant::ContainsAtLeast(uint a_nEntities)
 {
 	//You need to check how many entity objects live within this octant
-	return false; //return something for the sake of start up code
+	if (m_pEntityMngr->GetEntityCount() > a_nEntities)
+		return true;
+	else
+		return false; //return something for the sake of start up code
 }
 void Octant::AssignIDtoEntity(void)
 {

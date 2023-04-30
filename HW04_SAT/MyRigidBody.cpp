@@ -23,10 +23,10 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	}
 
 	// translation vector between centers
-	vector3 t = vector3(vector4(a_pOther->m_v3Center, 1.0f) * a_pOther->m_m4ToWorld - vector4(m_v3Center, 1.0f) * m_m4ToWorld);
+	vector3 t = a_pOther->GetCenterGlobal() - GetCenterGlobal();
 
 	// put translation into a's coord frame
-	t = vector3(glm::dot(t, vector3(m_m4ToWorld[0])), glm::dot(t, vector3(m_m4ToWorld[2])), glm::dot(t, vector3(m_m4ToWorld[2])));
+	t = vector3(glm::dot(t, vector3(m_m4ToWorld[0])), glm::dot(t, vector3(m_m4ToWorld[1])), glm::dot(t, vector3(m_m4ToWorld[2])));
 
 	// Compute common subexpressions. add in an epsilon term to counteract arithmetic errors when two edges are parallel and their cross product is near null
 	for (int i = 0; i < 3; i++) {
@@ -115,7 +115,7 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 	{
 		uint nResult = SAT(a_pOther);
 
-		if (nResult) {
+		if (nResult == 0) {
 			bColliding = false;
 		}
 
