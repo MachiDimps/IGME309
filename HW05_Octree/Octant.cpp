@@ -185,8 +185,9 @@ void Octant::AssignIDtoEntity(void)
 
 	if (IsLeaf()) {
 		for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++) {
-			if (IsColliding(i))
+			if (IsColliding(i)) {
 				m_pEntityMngr->AddDimension(i, m_uID);
+			}
 		}
 	}
 	else {
