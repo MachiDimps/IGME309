@@ -107,11 +107,26 @@ bool Octant::IsColliding(uint a_uRBIndex)
 void Octant::Display(uint a_nIndex, vector3 a_v3Color)
 {
 	// Display the specified octant
+	
+	if (this->m_uID == a_nIndex) { //If this is the index we're looking for
+		m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_v3Center) *
+			glm::scale(vector3(m_fSize)), a_v3Color);
+	}
+	else if (m_uChildren == 8){ //If this is not the index we're looking for but it has children...
+		for (uint i = 0; i < m_uChildren; i++) {
+			m_pChild[i]->Display(a_nIndex, a_v3Color);
+		}
+	}
 }
 void Octant::Display(vector3 a_v3Color)
 {
 	//this is meant to be a recursive method, in starter code will only display the root
 	//even if other objects are created
+	if (m_uChildren > 0) {
+		for (uint i = 0; i < m_uChildren; i++) {
+			m_pChild[i]->Display(a_v3Color);
+		}
+	}
 	m_pModelMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_v3Center) *
 		glm::scale(vector3(m_fSize)), a_v3Color);
 }
@@ -124,32 +139,36 @@ void Octant::Subdivide(void)
 	//If this node has been already subdivided return without changes
 	if (m_uChildren != 0)
 		return;
-
+	
 	//Subdivide the space and allocate 8 children
 	//vector3(m_v3Center.x, m_v3Center.y, m_v3Center.z)
-	Octant* child0 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[0] = child0;
 
-	Octant* child1 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[1] = child1;
 
-	Octant* child2 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[2] = child2;
+	m_pChild[0] = new Octant(vector3(m_v3Center.x + (m_fSize / 4.0f), m_v3Center.y + (m_fSize / 4.0f), m_v3Center.z + (m_fSize / 4.0f)), m_fSize / 2.0f);
 
-	Octant* child3 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z + m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[3] = child3;
+	m_pChild[1] = new Octant(vector3(m_v3Center.x - (m_fSize / 4.0f), m_v3Center.y + (m_fSize / 4.0f), m_v3Center.z + (m_fSize / 4.0f)), m_fSize / 2.0f);
 
-	Octant* child4 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[4] = child4;
+	m_pChild[2] = new Octant(vector3(m_v3Center.x - (m_fSize / 4.0f), m_v3Center.y - (m_fSize / 4.0f), m_v3Center.z + (m_fSize / 4.0f)), m_fSize / 2.0f);
 
-	Octant* child5 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y + m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[5] = child5;
+	m_pChild[3] = new Octant(vector3(m_v3Center.x + (m_fSize / 4.0f), m_v3Center.y - (m_fSize / 4.0f), m_v3Center.z + (m_fSize / 4.0f)), m_fSize / 2.0f);
 
-	Octant* child6 = new Octant(vector3(m_v3Center.x - m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[6] = child6;
+	m_pChild[4] = new Octant(vector3(m_v3Center.x + (m_fSize / 4.0f), m_v3Center.y + (m_fSize / 4.0f), m_v3Center.z - (m_fSize / 4.0f)), m_fSize / 2.0f);
 
-	Octant* child7 = new Octant(vector3(m_v3Center.x + m_fSize / 4.0f, m_v3Center.y - m_fSize / 4.0f, m_v3Center.z - m_fSize / 4.0f), m_fSize / 2.0f);
-	m_pChild[7] = child7;
+	m_pChild[5] = new Octant(vector3(m_v3Center.x - (m_fSize / 4.0f), m_v3Center.y + (m_fSize / 4.0f), m_v3Center.z - (m_fSize / 4.0f)), m_fSize / 2.0f);;
+
+	m_pChild[6] = new Octant(vector3(m_v3Center.x - (m_fSize / 4.0f), m_v3Center.y - (m_fSize / 4.0f), m_v3Center.z - (m_fSize / 4.0f)), m_fSize / 2.0f);
+
+	m_pChild[7] = new Octant(vector3(m_v3Center.x + (m_fSize / 4.0f), m_v3Center.y - (m_fSize / 4.0f), m_v3Center.z - (m_fSize / 4.0f)), m_fSize / 2.0f);
+
+	m_uChildren += 8;
+
+	for (uint i = 0; i < 8; i++) {
+		m_pChild[i]->m_uLevel = m_uLevel + 1;
+	}
+
+	for (uint i = 0; i < 8; i++) {
+		m_pChild[i]->Subdivide();
+	}
 }
 bool Octant::ContainsAtLeast(uint a_nEntities)
 {
@@ -164,7 +183,18 @@ void Octant::AssignIDtoEntity(void)
 	//Recursive method
 	//Have to traverse the tree and make sure to tell the entity manager
 	//what octant (space) each object is at
-	m_pEntityMngr->AddDimension(0, m_uID);//example only, take the first entity and tell it its on this space
+	//m_pEntityMngr->AddDimension(0, m_uID);//example only, take the first entity and tell it its on this space
+
+	if (IsLeaf()) {
+		for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++) {
+			m_pEntityMngr->AddDimension(i, m_uID);
+		}
+	}
+	else {
+		for (uint i = 0; i < 8; i++) {
+			m_pChild[i]->AssignIDtoEntity();
+		}
+	}
 }
 //-------------------------------------------------------------------------------------------------------------------
 // You can assume the following is fine and does not need changes, you may add onto it but the code is fine as is
