@@ -97,7 +97,7 @@ bool Octant::IsColliding(uint a_uRBIndex)
 
 		if (this->m_v3Max.z < pRB->GetMinGlobal().z)//Is object in front of octant?
 			return false;
-		if (this->m_v3Min.z < pRB->GetMaxGlobal().z)//Is object behind octant?
+		if (this->m_v3Min.z > pRB->GetMaxGlobal().z)//Is object behind octant?
 			return false;
 	}
 	
@@ -191,7 +191,7 @@ void Octant::AssignIDtoEntity(void)
 		}
 	}
 	else {
-		for (uint i = 0; i < 8; i++) {
+		for (uint i = 0; i < m_uChildren; i++) {
 			m_pChild[i]->AssignIDtoEntity();
 		}
 	}
