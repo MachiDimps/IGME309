@@ -141,8 +141,6 @@ void Octant::Subdivide(void)
 		return;
 	
 	//Subdivide the space and allocate 8 children
-	//vector3(m_v3Center.x, m_v3Center.y, m_v3Center.z)
-
 
 	m_pChild[0] = new Octant(vector3(m_v3Center.x + (m_fSize / 4.0f), m_v3Center.y + (m_fSize / 4.0f), m_v3Center.z + (m_fSize / 4.0f)), m_fSize / 2.0f);
 
@@ -187,7 +185,8 @@ void Octant::AssignIDtoEntity(void)
 
 	if (IsLeaf()) {
 		for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++) {
-			m_pEntityMngr->AddDimension(i, m_uID);
+			if (IsColliding(i))
+				m_pEntityMngr->AddDimension(i, m_uID);
 		}
 	}
 	else {
